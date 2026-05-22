@@ -3320,7 +3320,9 @@ export default function App(): JSX.Element {
 
         {pageError ? <div className="error-banner">{pageError}</div> : null}
 
-        <section className="service-region">
+        <section
+          className={`service-region ${contentPanel.mode === 'terminal' ? 'service-region--terminal' : ''}`}
+        >
           {loading ? (
             <div className="empty-state">Loading launch agents...</div>
 	          ) : contentPanel.mode === 'create' ? (
@@ -5402,6 +5404,19 @@ function TerminalPanel({
       }
     })
     const fitAddon = new FitAddon()
+    const scrollLogTerminalToBottom = (): void => {
+      if (!isLogTerminal) {
+        return
+      }
+
+      term.scrollToBottom()
+      host.scrollTop = host.scrollHeight
+      window.requestAnimationFrame(() => {
+        term.scrollToBottom()
+        host.scrollTop = host.scrollHeight
+      })
+    }
+
     const terminalInput = term.onData((data) => {
       if (!sessionActive) {
         return
@@ -5415,9 +5430,7 @@ function TerminalPanel({
       }
 
       term.write(event.data, () => {
-        if (panel.terminalMode === 'logs' || panel.terminalMode === 'stdout' || panel.terminalMode === 'stderr') {
-          term.scrollToBottom()
-        }
+        scrollLogTerminalToBottom()
       })
     })
     const unsubscribeExit = window.launchdControl.onTerminalExit((event) => {
@@ -5448,9 +5461,14 @@ function TerminalPanel({
     term.open(host)
     fitAddon.fit()
     term.focus()
-    if (panel.terminalMode === 'logs' || panel.terminalMode === 'stdout' || panel.terminalMode === 'stderr') {
-      term.scrollToBottom()
-    }
+    scrollLogTerminalToBottom()
+    window.requestAnimationFrame(() => {
+      fitAddon.fit()
+      scrollLogTerminalToBottom()
+      if (sessionActive) {
+        window.launchdControl.resizeTerminal(panel.session.id, term.cols, term.rows)
+      }
+    })
     window.launchdControl.resizeTerminal(panel.session.id, term.cols, term.rows)
     resizeObserver.observe(host)
 

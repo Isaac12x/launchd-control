@@ -764,6 +764,11 @@ button {
   padding-right: 0.2rem;
 }
 
+.service-region--terminal {
+  overflow: hidden;
+  padding-right: 0;
+}
+
 .service-layout {
   display: grid;
   grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);

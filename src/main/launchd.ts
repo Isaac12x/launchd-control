@@ -1588,8 +1588,8 @@ function buildGhosttyCommand(service: LaunchdService, mode: LaunchdTerminalMode)
 
   if (logTargets.length > 0) {
     const quotedPaths = logTargets.map((target) => quoteTerminalPath(target.path))
-    commandParts.push(`printf 'Tailing ${mode === 'stdout' ? 'stdout' : mode === 'stderr' ? 'stderr' : 'declared logs'} with: tail -n 300 -F ${quotedPaths.join(' ')}\\n\\n'`)
-    commandParts.push(`tail -n 300 -F ${quotedPaths.join(' ')}`)
+    commandParts.push(`printf 'Following ${mode === 'stdout' ? 'stdout' : mode === 'stderr' ? 'stderr' : 'declared logs'} from the end with: tail -n 0 -F ${quotedPaths.join(' ')}\\n\\n'`)
+    commandParts.push(`tail -n 0 -F ${quotedPaths.join(' ')}; true`)
   } else {
     if (mode === 'stdout' || mode === 'stderr' || mode === 'logs') {
       commandParts.push(`printf 'No ${mode === 'logs' ? 'declared log targets' : mode} log target is declared for this service.\\n\\n'`)
