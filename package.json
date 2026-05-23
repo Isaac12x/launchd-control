@@ -1,6 +1,6 @@
 {
   "name": "launchd-control",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "private": true,
   "description": "Electron control surface for user launchd services",
   "main": "./out/main/index.js",
@@ -9,6 +9,7 @@
     "dev": "npm run prepare:ghostty && electron-vite dev",
     "build": "npm run prepare:ghostty && electron-vite build",
     "test:live-runtime": "node scripts/test-live-runtime.mjs",
+    "test:log-tail-flow": "node scripts/test-log-tail-flow.mjs",
     "test:repository-template": "node scripts/test-repository-template.mjs",
     "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json",
     "dist": "npm run build && electron-builder",

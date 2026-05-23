@@ -2433,13 +2433,12 @@ export default function App(): JSX.Element {
     }
   }
 
-  async function refreshVisibleLog(
+  async function reopenVisibleLogTerminal(
     label: string,
     kind: LogKind,
     failureOverride: ServiceActionFailure | null = actionFailures[label] ?? null
   ): Promise<void> {
-    const nextLogs = await window.launchdControl.readLogs(label)
-    setContentPanel(buildLogPanel(nextLogs, kind, failureOverride))
+    await openLogTerminal(label, kind, failureOverride)
   }
 
   async function handleAction(label: string, action: LaunchdAction): Promise<void> {
@@ -2564,7 +2563,7 @@ export default function App(): JSX.Element {
 
       if (contentPanel.mode === 'log' && contentPanel.serviceLabel === label) {
         try {
-          await refreshVisibleLog(label, contentPanel.kind)
+          await reopenVisibleLogTerminal(label, contentPanel.kind)
         } catch {
           // The rename result is still valid if the log pane refresh fails.
         }
@@ -2743,7 +2742,7 @@ export default function App(): JSX.Element {
     })
 
     try {
-      await refreshVisibleLog(contentPanel.serviceLabel, contentPanel.kind)
+      await reopenVisibleLogTerminal(contentPanel.serviceLabel, contentPanel.kind)
       setCardFeedback(contentPanel.serviceLabel, {
         tone: 'success',
         message: `${getLogButtonLabel(contentPanel.kind)} refreshed.`
