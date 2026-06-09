@@ -766,6 +766,8 @@ button {
 }
 
 .service-region--terminal {
+  height: 100%;
+  align-items: stretch;
   overflow: hidden;
   padding-right: 0;
 }
@@ -1862,9 +1864,8 @@ button {
   flex: 0 1 auto;
   min-width: 0;
   font-size: clamp(1rem, var(--service-title-size, 2rem), 2rem);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .title-display .icon-button {
@@ -1901,16 +1902,19 @@ button {
   grid-column: 1;
 }
 
+.service-card__label {
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
 .service-card__info {
   margin: -0.2rem 0 0;
-  display: -webkit-box;
+  display: block;
   font-size: 0.94rem;
   line-height: 1.45;
   color: var(--ink);
-  overflow: hidden;
-  word-break: break-word;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  overflow-wrap: anywhere;
+  word-break: normal;
 }
 
 .service-card__load-grid {
@@ -2420,6 +2424,8 @@ button {
 
 .terminal-panel__viewport {
   position: relative;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
   min-height: 0;
   overflow: hidden;
   border: 1px solid var(--terminal-line);
@@ -2451,6 +2457,7 @@ button {
 .terminal-panel__host {
   height: 100%;
   min-height: 0;
+  overflow: hidden;
   padding: 1rem 0.75rem 0.85rem 1rem;
 }
 

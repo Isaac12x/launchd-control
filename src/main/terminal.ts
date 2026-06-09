@@ -1,7 +1,8 @@
 import { randomUUID } from 'node:crypto'
 import type { BrowserWindow } from 'electron'
 import { homedir } from 'node:os'
-import pty, { type IPty } from 'node-pty'
+import * as pty from 'node-pty'
+import type { IPty } from 'node-pty'
 import type {
   LaunchdService,
   LaunchdTerminalMode,

@@ -5530,11 +5530,21 @@ function TerminalPanel({
         return
       }
 
-      term.scrollToBottom()
-      host.scrollTop = host.scrollHeight
-      window.requestAnimationFrame(() => {
+      const scroll = (): void => {
+        const viewport = host.querySelector<HTMLElement>('.xterm-viewport')
+
         term.scrollToBottom()
         host.scrollTop = host.scrollHeight
+
+        if (viewport) {
+          viewport.scrollTop = viewport.scrollHeight
+        }
+      }
+
+      scroll()
+      window.requestAnimationFrame(scroll)
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(scroll)
       })
     }
 
@@ -5564,11 +5574,15 @@ function TerminalPanel({
       term.write(
         `\r\n\x1b[33m[terminal exited with code ${event.exitCode}${
           typeof event.signal === 'number' ? `, signal ${event.signal}` : ''
-        }]\x1b[0m\r\n`
+        }]\x1b[0m\r\n`,
+        () => {
+          scrollLogTerminalToBottom()
+        }
       )
     })
     const resizeObserver = new ResizeObserver(() => {
       fitAddon.fit()
+      scrollLogTerminalToBottom()
 
       if (!sessionActive) {
         return
@@ -5601,7 +5615,7 @@ function TerminalPanel({
       terminalInput.dispose()
       term.dispose()
     }
-  }, [panel.session.id])
+  }, [isLogTerminal, panel.session.id])
 
   return (
     <article className={`terminal-panel ${isLogTerminal ? 'terminal-panel--log' : ''}`}>
