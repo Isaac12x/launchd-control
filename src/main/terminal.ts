@@ -11,6 +11,7 @@ import type {
   TerminalSessionInfo
 } from '../shared/types'
 import { buildTerminalCommand, getServiceWorkingDirectory } from './launchd'
+import { prepareTerminalLogTargets } from './terminalLogs'
 
 interface TerminalSession {
   window: BrowserWindow
@@ -24,11 +25,13 @@ function getShell(): string {
   return process.env.SHELL?.trim() || '/bin/zsh'
 }
 
-export function openTerminalSession(
+export async function openTerminalSession(
   window: BrowserWindow,
   service: LaunchdService,
   mode: LaunchdTerminalMode
-): TerminalSessionInfo {
+): Promise<TerminalSessionInfo> {
+  await prepareTerminalLogTargets(service, mode)
+
   const shell = getShell()
   const cwd = getServiceWorkingDirectory(service) || homedir()
   const info: TerminalSessionInfo = {

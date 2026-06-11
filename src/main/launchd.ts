@@ -23,6 +23,7 @@ import type {
 import { getServiceStartBlocker } from './automation'
 import { resolveGhosttyApp } from './ghostty'
 import { removeAlias } from './store'
+import { getTerminalLogTargets, prepareTerminalLogTargets } from './terminalLogs'
 
 const execFileAsync = promisify(execFile)
 const uid = process.getuid?.() ?? Number(process.env.UID ?? 0)
@@ -1573,14 +1574,6 @@ function quoteTerminalPath(path: string): string {
   return `'${path.replace(/'/g, `'\\''`)}'`
 }
 
-function getTerminalLogTargets(service: LaunchdService, mode: LaunchdTerminalMode): ServiceLogTarget[] {
-  if (mode === 'stdout' || mode === 'stderr') {
-    return service.logTargets.filter((target) => target.kind === mode)
-  }
-
-  return mode === 'logs' ? service.logTargets : []
-}
-
 function buildGhosttyCommand(service: LaunchdService, mode: LaunchdTerminalMode): string {
   const commandParts = [
     `printf '\\nLaunchControl\\n'`,
@@ -1621,6 +1614,8 @@ export async function openGhostty(
   service: LaunchdService,
   mode: LaunchdTerminalMode
 ): Promise<void> {
+  await prepareTerminalLogTargets(service, mode)
+
   const ghosttyApp = await resolveGhosttyApp()
   const command = buildTerminalCommand(service, mode)
 

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Create missing declared log files and parent directories before opening embedded or Ghostty log terminals, preventing `tail` startup errors.
+
 ## [1.0.5] - 2026-06-09
 
 ### Added
